@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 //teacher Data: _id(objectID), fullname,password, email , image (which is string)
 const teacherSchema = new mongoose.Schema({
   _id: Number,
+ // _id:mongoose.Types.ObjectId,
   Fullname: { type: String, require: true },
   password: String,
   Email: String,
