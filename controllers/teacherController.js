@@ -19,7 +19,7 @@ exports.GetAllTeachers = function (request, response, next) {
   response.status(200).json({ message: " Get teacher." });
 };*/
 exports.AddNewTeacher = function (request, response, next) {
-  bcrypt.hash(request.body.Password, saltRounds, (err, hash) => {
+  bcrypt.hash(request.body.password, saltRounds, (err, hash) => {
     let object = new teacherSchema({
       _id: request.body.id,
       Fullname: request.body.Fullname,

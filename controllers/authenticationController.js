@@ -4,6 +4,7 @@ require("./../models/teacherModel");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const teacherSchema = mongoose.model("teachers");
+const bcrypt = require("bcrypt");
 
 exports.login = function (request, response, next) {
   // admin with static username and password
@@ -18,18 +19,24 @@ exports.login = function (request, response, next) {
     response.status(200).json({ data: "ok", token });
   } else {
     teacherSchema
-      .findOne({ Email: request.body.Email, password: request.body.password })
+      .findOne({ Email: request.body.Email })
       .then((user) => {
-        if (user == null) {
-          throw new Error("user not exist");
-        }
-
-        const token = jwt.sign(
-          { id: user._id, role: "teacher" },
-          "nurserysystem",
-          { expiresIn: "1h" }
+        bcrypt.compare(
+          request.body.password,
+          user.password,
+          function (err, res) {
+            if (res == true) {
+              const token = jwt.sign(
+                { id: user._id, role: "teacher" },
+                "nurserysystem",
+                { expiresIn: "1h" }
+              );
+              response.status(200).json({ data: "ok", token });
+            } else {
+              next(err);
+            }
+          }
         );
-        response.status(200).json({ data: "ok", token });
       })
       .catch((error) => next(error));
   }
